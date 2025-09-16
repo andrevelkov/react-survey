@@ -1,15 +1,30 @@
+import PropTypes from "prop-types";
 import AnswersItem from "./AnswersItem";
 
-export default function AnswersList(props) {
-  console.log("Inside AnswersList: ", props);
-
-  const { answersList } = props;
+export default function AnswersList({ answers }) {
+  // console.log("Inside AnswersList: ", answers)
 
   return (
     <ul>
-      {answersList.map((answerItem, i) => (
-        <AnswersItem answerItem={answerItem} key={i} />
+      {answers.map((answerItem, i) => (
+        // console.log(answers),
+        // console.log(answerItem[i]),
+        // console.log(answerItem[i].spendTime),
+        // console.log(answerItem[i].username)
+
+        <AnswersItem answerItem={{
+          username: answerItem.username,
+          color: answerItem.color,
+          spendTime: answerItem.spendTime,
+          review: answerItem.review
+        }} key={i} />
+
       ))}
     </ul>
   );
+}
+
+// Add prop types
+AnswersList.propTypes = {
+  answers: PropTypes.array.isRequired,
 }

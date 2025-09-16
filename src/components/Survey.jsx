@@ -1,20 +1,46 @@
 import { useState } from "react";
+import AnswersList from "./AnswersList";
 
 function Survey() {
   const [open, setOpen] = useState(false); //Ignore this state
+  const [answers, setAnswers] = useState([])
+  const [form, setForm] = useState({
+    color: "",
+    spendTime: [],
+    review: "",
+    username: "",
+    email: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
+
+    if (type === "checkbox") {
+      let updated = checked 
+        ? [...form[name], value]                  // add new value
+        : form[name].filter((v) => v !== value);  // remove unchecked and add new list
+      setForm({ ...form, [name]: updated });
+
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }))
+    }
+  }
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
 
-    const formData = new FormData(e.target)
-    const data = Object.fromEntries(formData.entries())
+    console.log(form)
 
-    // checkboxes with same name return only last value,
-    // so use getAll for those
-    data["spend-time"] = formData.getAll("spend-time")
+    setAnswers((prev) => [...prev, form])
 
-    console.log(data);
-
+    // Reset form state
+    setForm({
+      color: "",
+      spendTime: [],
+      review: "",
+      username: "",
+      email: "",
+    })
     e.target.reset()
   }
 
@@ -23,6 +49,8 @@ function Survey() {
       <section className={`survey__list ${open ? "open" : ""}`}>
         <h2>Answers list</h2>
         {/* answers should go here */}
+
+        <AnswersList answers={answers}/>
 
       </section>
       <section className="survey__form">
@@ -35,19 +63,19 @@ function Survey() {
             <h3>How do you rate your rubber duck colour?</h3>
             <ul>
               <li>
-                <input id="color-one" type="radio" name="color" value="1" />
+                <input id="color-one" type="radio" name="color" value="1" onChange={handleChange}/>
                 <label htmlFor="color-one">1</label>
               </li>
               <li>
-                <input id="color-two" type="radio" name="color" value="2" />
+                <input id="color-two" type="radio" name="color" value="2" onChange={handleChange}/>
                 <label htmlFor="color-two">2</label>
               </li>
               <li>
-                <input id="color-three" type="radio" name="color" value="3" />
+                <input id="color-three" type="radio" name="color" value="3" onChange={handleChange}/>
                 <label htmlFor="color-three">3</label>
               </li>
               <li>
-                <input id="color-four" type="radio" name="color" value="4" />
+                <input id="color-four" type="radio" name="color" value="4" onChange={handleChange}/>
                 <label htmlFor="color-four">4</label>
               </li>
             </ul>
@@ -58,25 +86,25 @@ function Survey() {
             <ul>
               <li>
                 <label>
-                  <input name="spend-time" type="checkbox" value="swimming"/>
+                  <input name="spendTime" type="checkbox" value="swimming" onChange={handleChange}/>
                   Swimming
                 </label>
               </li>
               <li>
                 <label>
-                  <input name="spend-time" type="checkbox" value="bathing" />
+                  <input name="spendTime" type="checkbox" value="bathing" onChange={handleChange}/>
                   Bathing
                 </label>
               </li>
               <li>
                 <label>
-                  <input name="spend-time" type="checkbox" value="chatting"/>
+                  <input name="spendTime" type="checkbox" value="chatting" onChange={handleChange}/>
                   Chatting
                 </label>
               </li>
               <li>
                 <label>
-                  <input name="spend-time" type="checkbox" value="noTime" />
+                  <input name="spendTime" type="checkbox" value="noTime" onChange={handleChange}/>
                   I do not like to spend time with it
                 </label>
               </li>
@@ -85,17 +113,17 @@ function Survey() {
 
           <label>
             What else have you got to say about your rubber duck?
-            <textarea name="review" cols="30" rows="10"></textarea>
+            <textarea name="review" cols="30" rows="10" onChange={handleChange}></textarea>
           </label>
             
           <label>
             Put your name here (if you feel like it):
-            <input type="text" name="username" defaultValue={""} />
+            <input type="text" name="username" defaultValue={""} onChange={handleChange}/>
           </label>
               
           <label>
             Leave us your email pretty please??
-            <input type="email" name="email" defaultValue={""}/>
+            <input type="email" name="email" defaultValue={""} onChange={handleChange}/>
           </label>
           
           <input className="form__submit" type="submit" value="Submit Survey!" />

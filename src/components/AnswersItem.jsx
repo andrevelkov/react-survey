@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 // Components don't need to be separeted into individual files
 // Here we have a smaller component that helps compose the AnswersItem below
 
@@ -11,30 +13,34 @@ const answersSet = {
 function ItemsList({ list }) {
   return (
     <ul>
-      {list.map((item) => (
-        <li>{answersSet[item]}</li>
+      {list.map((item, index) => (
+        <li key={index}>{answersSet[item]}</li>
       ))}
     </ul>
   );
+}
+
+ItemsList.propTypes = {
+  list: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 // This is the main component being exported from this file
 export default function AnswersItem({
   // Feel free to change this props names to what suits you best
   // Rememeber here we're destructuring answerItem, which is the prop name that we've passed
-  answerItem: { username, colour, timeSpent, review }
+  answerItem: { username, color, spendTime, review }
 }) {
   return (
     <li>
       <article className="answer">
         <h3>{username || "Anon"} said:</h3>
         <p>
-          <em>How do you rate your rubber duck colour?</em>
-          <span className="answer__line">{colour}</span>
+          <em>How do you rate your rubber duck color?</em>
+          <span className="answer__line">{color}</span>
         </p>
         <p>
           <em>How do you like to spend time with your rubber duck?</em>
-          <ItemsList list={timeSpent} />
+          <ItemsList list={spendTime} />
         </p>
         <p>
           <em>What else have you got to say about your rubber duck?</em>
@@ -44,3 +50,15 @@ export default function AnswersItem({
     </li>
   );
 }
+
+AnswersItem.propTypes = {
+  answerItem: PropTypes.shape({
+    username: PropTypes.string,
+    color: PropTypes.string,
+    spendTime: PropTypes.arrayOf(PropTypes.string),
+    review: PropTypes.string
+  }).isRequired
+
+
+}
+
